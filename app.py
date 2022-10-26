@@ -18,11 +18,11 @@ def send_to_bot(sender, message):
                "Accept": "application/json"}
 
     r = requests.post(f'{rasa_url}/webhooks/rest/webhook',
-                      json=data, headers=headers)
+                      json=data, headers=headers).json()
     application.logger.debug(f'-> To bot: {data}')
-    application.logger.debug(f'<- Response from bot: {r.json()}')
+    application.logger.debug(f'<- Response from bot: {r}')
     if r:
-        return r.json()[0]['text']
+        return r[0]['text']
     return None
 
 
@@ -38,7 +38,7 @@ def send_to_chatwoot(account, conversation, message):
     r = requests.post(url,
                       json=data, headers=headers)
     application.logger.debug(f'-> To chatwoot: {data}')
-    application.logger.debug(f'<- Response from chatwoot: {r.json}')
+    application.logger.debug(f'<- Response from chatwoot: {r.json()}')
     return r.json()
 
 
