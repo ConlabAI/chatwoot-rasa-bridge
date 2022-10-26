@@ -8,9 +8,6 @@ rasa_url = os.environ.get('RASA_URL', 'http://localhost:5005')
 chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
 chatwoot_bot_token = os.environ.get('CHATWOOT_API_TOKEN')
 
-print(f'**** module name: {__name__}')
-
-
 def send_to_bot(sender, message):
     data = {
         'sender': sender,
@@ -61,6 +58,8 @@ def rasa():
             account, conversation, bot_response)
     return create_message
 
+
+print(f'**** module name: {__name__}')
 
 if __name__ == 'app':
     gunicorn_logger = logging.getLogger('gunicorn.error')
