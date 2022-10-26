@@ -8,6 +8,7 @@ rasa_url = os.environ.get('RASA_URL', 'http://localhost:5005')
 chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
 chatwoot_bot_token = os.environ.get('CHATWOOT_API_TOKEN')
 
+
 def send_to_bot(sender, message):
     data = {
         'sender': sender,
@@ -41,6 +42,12 @@ def send_to_chatwoot(account, conversation, message):
 
 application = Flask(__name__)
 
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    application.logger.handlers = gunicorn_logger.handlers
+    application.logger.setLevel(gunicorn_logger.level)
+
+
 
 @application.route('/rasa', methods=['POST'])
 def rasa():
@@ -58,13 +65,6 @@ def rasa():
             account, conversation, bot_response)
     return create_message
 
-
-print(f'**** module name: {__name__}')
-
-if __name__ == 'app':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    application.logger.handlers = gunicorn_logger.handlers
-    application.logger.setLevel(gunicorn_logger.level)
 
 if __name__ == '__main__':
     application.run(debug=1)
