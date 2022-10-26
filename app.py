@@ -66,5 +66,7 @@ if __name__ == 'app':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     application.logger.handlers = gunicorn_logger.handlers
     application.logger.setLevel(gunicorn_logger.level)
+
+if __name__ == '__main__':
     application.run(debug=1)
     # print(send_to_chatwoot(2,12,'3'))
