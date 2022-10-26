@@ -1,6 +1,6 @@
 import os
 import requests
-# import logging
+import logging
 from flask import Flask, request
 
 
@@ -19,8 +19,8 @@ def send_to_bot(sender, message):
 
     r = requests.post(f'{rasa_url}/webhooks/rest/webhook',
                       json=data, headers=headers)
-    application.logger.info(f'-> To bot: {data}')
-    application.logger.info(f'<- Response from bot: {r.json()}')
+    application.logger.debug(f'-> To bot: {data}')
+    application.logger.debug(f'<- Response from bot: {r.json()}')
     return r.json()[0]['text']
 
 
@@ -35,8 +35,8 @@ def send_to_chatwoot(account, conversation, message):
 
     r = requests.post(url,
                       json=data, headers=headers)
-    application.logger.info(f'-> To chatwoot: {data}')
-    application.logger.info(f'<- Response from chatwoot: {r.json}')
+    application.logger.debug(f'-> To chatwoot: {data}')
+    application.logger.debug(f'<- Response from chatwoot: {r.json}')
     return r.json()
 
 
@@ -46,7 +46,7 @@ application = Flask(__name__)
 @application.route('/rasa', methods=['POST'])
 def rasa():
     data = request.get_json()
-    application.logger.info(f'<- Event from chatwoot: {data}')
+    application.logger.debug(f'<- Event from chatwoot: {data}')
     message_type = data['message_type']
     message = data['content']
     conversation = data['conversation']['id']
@@ -61,5 +61,8 @@ def rasa():
 
 
 if __name__ == '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    application.logger.handlers = gunicorn_logger.handlers
+    application.logger.setLevel(gunicorn_logger.level)
     application.run(debug=1)
     # print(send_to_chatwoot(2,12,'3'))
