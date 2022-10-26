@@ -21,7 +21,9 @@ def send_to_bot(sender, message):
                       json=data, headers=headers)
     application.logger.debug(f'-> To bot: {data}')
     application.logger.debug(f'<- Response from bot: {r.json()}')
-    return r.json()[0]['text']
+    if r:
+        return r.json()[0]['text']
+    return None
 
 
 def send_to_chatwoot(account, conversation, message):
@@ -46,7 +48,6 @@ if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     application.logger.handlers = gunicorn_logger.handlers
     application.logger.setLevel(gunicorn_logger.level)
-
 
 
 @application.route('/rasa', methods=['POST'])
