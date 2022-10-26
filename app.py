@@ -21,9 +21,7 @@ def send_to_bot(sender, message):
                       json=data, headers=headers).json()
     application.logger.debug(f'-> To bot: {data}')
     application.logger.debug(f'<- Response from bot: {r}')
-    if r:
-        return r[0]['text']
-    return None
+    return r
 
 
 def send_to_chatwoot(account, conversation, message):
@@ -61,10 +59,10 @@ def rasa():
     account = data['account']['id']
 
     if (message_type == "incoming"):
-        bot_response = send_to_bot(contact, message)
-        if bot_response:
-            create_message = send_to_chatwoot(account,
-                                              conversation, bot_response)
+        bot_responses = send_to_bot(contact, message)
+        if bot_responses:
+            for response in bot_responses:
+                create_message = send_to_chatwoot(account, conversation, response['text'])
             return create_message
     return {}
 
