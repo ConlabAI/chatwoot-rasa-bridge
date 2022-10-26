@@ -2,6 +2,9 @@ FROM python:3.7-slim
 
 WORKDIR /app
 ENV HOME=/app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 COPY requirements.txt .
 
 # Install dependencies
