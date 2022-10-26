@@ -62,7 +62,7 @@ def rasa():
     return create_message
 
 
-if __name__ == '__main__':
+if __name__ in ['__main__', 'app']:
     gunicorn_logger = logging.getLogger('gunicorn.error')
     application.logger.handlers = gunicorn_logger.handlers
     application.logger.setLevel(gunicorn_logger.level)
