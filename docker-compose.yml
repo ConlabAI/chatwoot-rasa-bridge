@@ -1,0 +1,22 @@
+services:
+  rasa-chatwoot-bridge:
+    platform: linux/amd64
+    image: timidri/chatwoot-rasa-bridge:latest
+    build: .
+    environment:
+      - RASA_URL=http://rasa:5005
+      - CHATWOOT_API_KEY=EurRG97f9JuRh2RevWQtMXio
+      - CHATWOOT_API_URL=https://chat.idtlsm.com
+      # - CHATWOOT_INBOX_ID=YOUR_INBOX_ID
+    networks:
+      - chatwoot
+      - rasa
+
+networks:
+  rasa:
+    name: rasa_default
+    external: true
+  chatwoot:
+    name: chatwoot_default
+    external: true
+
