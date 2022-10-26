@@ -62,9 +62,10 @@ def rasa():
 
     if (message_type == "incoming"):
         bot_response = send_to_bot(contact, message)
-        create_message = send_to_chatwoot(
-            account, conversation, bot_response)
-    return create_message
+        if bot_response:
+            create_message = send_to_chatwoot(account,
+                                              conversation, bot_response)
+            return create_message
 
 
 if __name__ == '__main__':
