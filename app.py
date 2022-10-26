@@ -6,7 +6,7 @@ from flask import Flask, request
 
 rasa_url = os.environ.get('RASA_URL', 'http://localhost:5005')
 chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
-chatwoot_bot_token = os.environ.get('CHATWOOT_API_TOKEN')
+chatwoot_api_key = os.environ.get('CHATWOOT_API_KEY')
 
 
 def send_to_bot(sender, message):
@@ -33,7 +33,7 @@ def send_to_chatwoot(account, conversation, message):
     url = f"{chatwoot_url}/api/v1/accounts/{account}/conversations/{conversation}/messages"
     headers = {"Content-Type": "application/json",
                "Accept": "application/json",
-               "api_access_token": f"{chatwoot_bot_token}"}
+               "api_access_token": f"{chatwoot_api_key}"}
 
     r = requests.post(url,
                       json=data, headers=headers)
