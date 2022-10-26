@@ -1,6 +1,6 @@
 import os
 import requests
-import logging
+# import logging
 from flask import Flask, request
 
 
@@ -19,8 +19,8 @@ def send_to_bot(sender, message):
 
     r = requests.post(f'{rasa_url}/webhooks/rest/webhook',
                       json=data, headers=headers)
-    logging.info(f'-> To bot: {data}')
-    logging.info(f'<- Response from bot: {r.json()}')
+    application.logger.info(f'-> To bot: {data}')
+    application.logger.info(f'<- Response from bot: {r.json()}')
     return r.json()[0]['text']
 
 
@@ -35,8 +35,8 @@ def send_to_chatwoot(account, conversation, message):
 
     r = requests.post(url,
                       json=data, headers=headers)
-    logging.info(f'-> To chatwoot: {data}')
-    logging.info(f'<- Response from chatwoot: {r.json}')
+    application.logger.info(f'-> To chatwoot: {data}')
+    application.logger.info(f'<- Response from chatwoot: {r.json}')
     return r.json()
 
 
@@ -46,7 +46,7 @@ application = Flask(__name__)
 @application.route('/rasa', methods=['POST'])
 def rasa():
     data = request.get_json()
-    logging.info(f'<- Event from chatwoot: {data}')
+    application.logger.info(f'<- Event from chatwoot: {data}')
     message_type = data['message_type']
     message = data['content']
     conversation = data['conversation']['id']
