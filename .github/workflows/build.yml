@@ -62,3 +62,4 @@ jobs:
         env:
           webhook_url: ${{ secrets.DEPLOY_WEBHOOK_URL }}
           verbose: true
+          verify_ssl: false
