@@ -51,7 +51,6 @@ if __name__ != '__main__':
 @application.route('/rasa', methods=['POST'])
 def rasa():
     data = request.get_json()
-    application.logger.debug(f'<- Event from chatwoot: {data}')
     message_type = data['message_type']
     message = data['content']
     conversation = data['conversation']['id']
@@ -59,10 +58,11 @@ def rasa():
     account = data['account']['id']
 
     if (message_type == "incoming"):
+        application.logger.debug(f'<- Event from chatwoot: {data}')
         bot_responses = send_to_bot(contact, message)
         if bot_responses:
             for response in bot_responses:
-                create_message = send_to_chatwoot(account, conversation, 
+                create_message = send_to_chatwoot(account, conversation,
                                                   response['text'])
             return create_message
     return {}
