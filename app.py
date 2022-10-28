@@ -53,12 +53,13 @@ if __name__ != '__main__':
 def rasa():
     data = request.get_json()
     message_type = data['message_type']
+    event_type = data['event']
     message = data['content']
     conversation = data['conversation']['id']
     contact = data['sender']['id']
     account = data['account']['id']
 
-    if (message_type == "incoming"):
+    if (message_type == "incoming" and event_type == "message_created" ):
         application.logger.debug(f'<- Event from chatwoot: {json.dumps(data, indent=2)}')
         bot_responses = send_to_bot(contact, message)
         if bot_responses:
