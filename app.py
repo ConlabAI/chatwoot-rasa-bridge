@@ -1,6 +1,7 @@
 import os
 import requests
 import logging
+import json
 from flask import Flask, request
 
 
@@ -35,7 +36,7 @@ def send_to_chatwoot(account, conversation, message):
 
     r = requests.post(url,
                       json=data, headers=headers)
-    application.logger.debug(f'-> To chatwoot: {data}')
+    application.logger.debug(f'-> To chatwoot: {json.dumps(data, indent=2)}')
     application.logger.debug(f'<- Response from chatwoot: {r.json()}')
     return r.json()
 
@@ -58,7 +59,7 @@ def rasa():
     account = data['account']['id']
 
     if (message_type == "incoming"):
-        application.logger.debug(f'<- Event from chatwoot: {data}')
+        application.logger.debug(f'<- Event from chatwoot: {json.dumps(data, indent=2)}')
         bot_responses = send_to_bot(contact, message)
         if bot_responses:
             for response in bot_responses:
