@@ -10,10 +10,11 @@ chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
 chatwoot_api_key = os.environ.get('CHATWOOT_API_KEY')
 
 
-def send_to_bot(sender, message):
+def send_to_bot(sender, message, event):
     data = {
         'sender': sender,
-        'message': message
+        'message': message,
+        'metadata': event
     }
     headers = {"Content-Type": "application/json",
                "Accept": "application/json"}
@@ -61,7 +62,7 @@ def rasa():
 
     if (message_type == "incoming" and event_type == "message_created" ):
         application.logger.debug(f'<- Event from chatwoot: {json.dumps(data, indent=2)}')
-        bot_responses = send_to_bot(contact, message)
+        bot_responses = send_to_bot(contact, message, data)
         if bot_responses:
             for response in bot_responses:
                 create_message = send_to_chatwoot(account, conversation,
