@@ -2,12 +2,14 @@ import os
 import requests
 import logging
 import json
+import time
 from flask import Flask, request
 
 
 rasa_url = os.environ.get('RASA_URL', 'http://localhost:5005')
 chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
 chatwoot_api_key = os.environ.get('CHATWOOT_API_KEY')
+message_delay = int(os.environ.get('CHATWOOT_MESSAGES_DELAY', 0))
 
 
 def send_to_bot(sender, message, event):
@@ -67,6 +69,8 @@ def rasa():
             for response in bot_responses:
                 create_message = send_to_chatwoot(account, conversation,
                                                   response['text'])
+                if message_delay:
+                    time.sleep(message_delay)
             return create_message
     return {}
 
