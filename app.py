@@ -52,19 +52,25 @@ if __name__ != '__main__':
     application.logger.setLevel(gunicorn_logger.level)
 
 
+def valid_chatwoot_event(event):
+    message_type = event['message_type']
+    event_type = event['event']
+    status = event['status']
+    return (message_type == "incoming" and event_type == "message_created"
+            and status == "pending")
+
+
 @application.route('/rasa', methods=['POST'])
 def rasa():
-    data = request.get_json()
-    message_type = data['message_type']
-    event_type = data['event']
-    message = data['content']
-    conversation = data['conversation']['id']
-    contact = data['sender']['id']
-    account = data['account']['id']
+    event = request.get_json()
+    message = event['content']
+    conversation = event['conversation']['id']
+    contact = event['sender']['id']
+    account = event['account']['id']
 
-    if (message_type == "incoming" and event_type == "message_created" ):
-        application.logger.debug(f'<- Event from chatwoot: {json.dumps(data, indent=2)}')
-        bot_responses = send_to_bot(contact, message, data)
+    if valid_chatwoot_event(event):
+        application.logger.debug(f'<- Event from chatwoot: {json.dumps(event, indent=2)}')
+        bot_responses = send_to_bot(contact, message, event)
         if bot_responses:
             for response in bot_responses:
                 create_message = send_to_chatwoot(account, conversation,
