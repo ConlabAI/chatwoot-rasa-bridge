@@ -70,6 +70,7 @@ def rasa():
                 create_message = send_to_chatwoot(account, conversation,
                                                   response['text'])
                 if message_delay:
+                    application.logger.debug(f'Sleeping {message_delay} seconds...')
                     time.sleep(message_delay)
             return create_message
     return {}
