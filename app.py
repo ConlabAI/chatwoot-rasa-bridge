@@ -55,7 +55,7 @@ if __name__ != '__main__':
 def valid_chatwoot_event(event):
     message_type = event['message_type']
     event_type = event['event']
-    status = event['status']
+    status = event['conversation']['status']
     return (message_type == "incoming" and event_type == "message_created"
             and status == "pending")
 
