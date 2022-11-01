@@ -60,5 +60,5 @@ jobs:
         name: Invoke portainer deployment hook
         uses: distributhor/workflow-webhook@v3.0.1
         env:
-          webhook_url: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          webhook_url: ${{ secrets.DEPLOY_WEBHOOK_URL_DEV }}
           verify_ssl: false
