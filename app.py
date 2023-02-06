@@ -46,10 +46,6 @@ def send_to_chatwoot(account, conversation, message):
 
 application = Flask(__name__)
 
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    application.logger.handlers = gunicorn_logger.handlers
-    application.logger.setLevel(gunicorn_logger.level)
 
 
 def valid_chatwoot_event(event):
@@ -83,5 +79,9 @@ def rasa():
 
 
 if __name__ == '__main__':
-    application.run(debug=1)
+    debug = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    application.logger.handlers = gunicorn_logger.handlers
+    application.logger.setLevel(gunicorn_logger.level)
+    application.run(debug=debug)
     # print(send_to_chatwoot(2,12,'3'))

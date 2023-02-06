@@ -15,4 +15,4 @@ USER 1001
 
 ENTRYPOINT [ "python" ]
 
-CMD [ "-m", "gunicorn", "--workers=1", "app", "-b", "0.0.0.0", "--log-level=debug" ]
+CMD [ "-m", "gunicorn", "--workers=1", "app", "-b", "0.0.0.0" ]
