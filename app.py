@@ -11,6 +11,13 @@ chatwoot_url = os.environ.get('CHATWOOT_URL', 'http://localhost:3000')
 chatwoot_api_key = os.environ.get('CHATWOOT_API_KEY')
 message_delay = int(os.environ.get('CHATWOOT_MESSAGES_DELAY', 0))
 
+application = Flask(__name__)
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    application.logger.handlers = gunicorn_logger.handlers
+    application.logger.setLevel(gunicorn_logger.level)
+
 
 def send_to_bot(sender, message, event):
     data = {
@@ -42,11 +49,6 @@ def send_to_chatwoot(account, conversation, message):
     application.logger.debug(f'-> To chatwoot: {json.dumps(data, indent=2)}')
     application.logger.debug(f'<- Response from chatwoot: {r.json()}')
     return r.json()
-
-
-application = Flask(__name__)
-
-
 
 def valid_chatwoot_event(event):
     message_type = event['message_type']
@@ -80,8 +82,7 @@ def rasa():
 
 if __name__ == '__main__':
     debug = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    application.logger.handlers = gunicorn_logger.handlers
-    application.logger.setLevel(gunicorn_logger.level)
     application.run(debug=debug)
     # print(send_to_chatwoot(2,12,'3'))
+
+# flake8: noqa E501
