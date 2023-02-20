@@ -9,7 +9,7 @@ on:
 
 env:
   PROD_TAG: conlab/chatwoot-rasa-bridge:latest
-  DEV_TAG: conlab/chatwoot-rasa-bridge:dev
+  DEV_TAG: conlab/chatwoot-rasa-bridge:develop
 
 jobs:
 
