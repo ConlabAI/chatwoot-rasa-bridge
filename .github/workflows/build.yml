@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 env:
-  PROD_TAG: ${{ secrets.DOCKER_USERNAME }}/chatwoot-rasa-bridge:latest
-  DEV_TAG: ${{ secrets.DOCKER_USERNAME }}/chatwoot-rasa-bridge:dev
+  PROD_TAG: conlab/chatwoot-rasa-bridge:latest
+  DEV_TAG: conlab/chatwoot-rasa-bridge:dev
 
 jobs:
 
