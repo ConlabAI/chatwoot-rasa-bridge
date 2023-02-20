@@ -81,6 +81,9 @@ def rasa():
 
 
 if __name__ == '__main__':
+    # debug configuration with gunicorn is a bit tricky
+    # you need to start the app with --log-level=debug to enable debug level logging
+    # the debug flag below just configures Flask to reload the app on code changes
     debug = os.environ.get('DEBUG', 'False').lower() in ('true', '1', 't')
     application.run(debug=debug)
     # print(send_to_chatwoot(2,12,'3'))
