@@ -39,36 +39,36 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-      -
-        name: Set environment and actions for action
-        id: env
-        run: |
-          echo "GITHUB_REF=$GITHUB_REF"
-          # we always build and train, since that's fast now
-          if [[ $GITHUB_REF == 'main' ]] || [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-              echo "ENV=PROD" >> "$GITHUB_OUTPUT"
-              echo -n "ENV: PROD, actions: build"
-              if [[ $GITHUB_EVENT_NAME == "pull_request" ]]; then
-                echo "TEST=1" >> "$GITHUB_OUTPUT"
-                # echo "CROSS_VALIDATION=1" >> "$GITHUB_OUTPUT"
-                echo ", train and test with cross validation"
-              else
-                echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
-                echo ", train and deploy"
-              fi
-          # are we doing push or PR to develop?
-          elif [[ $GITHUB_BASE_REF == 'develop' ]] || [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-              echo "ENV=DEV" >> "$GITHUB_OUTPUT"
-              echo -n "ENV: DEV" 
-              echo "TEST=1" >> "$GITHUB_OUTPUT"
-              if [[ $GITHUB_EVENT_NAME == "push" ]]; then
-                echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
-                echo ", actions: train, test and deploy"
-              fi
-          else
-              echo "ENV=FEATURE" >> "$GITHUB_OUTPUT"
-              echo "ENV: Feature branch"
-          fi
+      # -
+      #   name: Set environment and actions for action
+      #   id: env
+      #   run: |
+      #     echo "GITHUB_REF=$GITHUB_REF"
+      #     # we always build and train, since that's fast now
+      #     if [[ $GITHUB_REF == 'main' ]] || [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+      #         echo "ENV=PROD" >> "$GITHUB_OUTPUT"
+      #         echo -n "ENV: PROD, actions: build"
+      #         if [[ $GITHUB_EVENT_NAME == "pull_request" ]]; then
+      #           echo "TEST=1" >> "$GITHUB_OUTPUT"
+      #           # echo "CROSS_VALIDATION=1" >> "$GITHUB_OUTPUT"
+      #           echo ", train and test with cross validation"
+      #         else
+      #           echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
+      #           echo ", train and deploy"
+      #         fi
+      #     # are we doing push or PR to develop?
+      #     elif [[ $GITHUB_BASE_REF == 'develop' ]] || [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
+      #         echo "ENV=DEV" >> "$GITHUB_OUTPUT"
+      #         echo -n "ENV: DEV" 
+      #         echo "TEST=1" >> "$GITHUB_OUTPUT"
+      #         if [[ $GITHUB_EVENT_NAME == "push" ]]; then
+      #           echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
+      #           echo ", actions: train, test and deploy"
+      #         fi
+      #     else
+      #         echo "ENV=FEATURE" >> "$GITHUB_OUTPUT"
+      #         echo "ENV: Feature branch"
+      #     fi
       -
         name: Build and push
         uses: docker/build-push-action@v3
