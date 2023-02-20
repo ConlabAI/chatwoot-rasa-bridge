@@ -39,43 +39,29 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-      # -
-      #   name: Set environment and actions for action
-      #   id: env
-      #   run: |
-      #     echo "GITHUB_REF=$GITHUB_REF"
-      #     # we always build and train, since that's fast now
-      #     if [[ $GITHUB_REF == 'main' ]] || [[ $GITHUB_REF == 'refs/heads/main' ]]; then
-      #         echo "ENV=PROD" >> "$GITHUB_OUTPUT"
-      #         echo -n "ENV: PROD, actions: build"
-      #         if [[ $GITHUB_EVENT_NAME == "pull_request" ]]; then
-      #           echo "TEST=1" >> "$GITHUB_OUTPUT"
-      #           # echo "CROSS_VALIDATION=1" >> "$GITHUB_OUTPUT"
-      #           echo ", train and test with cross validation"
-      #         else
-      #           echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
-      #           echo ", train and deploy"
-      #         fi
-      #     # are we doing push or PR to develop?
-      #     elif [[ $GITHUB_BASE_REF == 'develop' ]] || [[ $GITHUB_REF == 'refs/heads/develop' ]]; then
-      #         echo "ENV=DEV" >> "$GITHUB_OUTPUT"
-      #         echo -n "ENV: DEV" 
-      #         echo "TEST=1" >> "$GITHUB_OUTPUT"
-      #         if [[ $GITHUB_EVENT_NAME == "push" ]]; then
-      #           echo "DEPLOY=1" >> "$GITHUB_OUTPUT"
-      #           echo ", actions: train, test and deploy"
-      #         fi
-      #     else
-      #         echo "ENV=FEATURE" >> "$GITHUB_OUTPUT"
-      #         echo "ENV: Feature branch"
-      #     fi
+      -
+        name: Set environment and actions for action
+        id: env
+        run: |
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+          if [[ $GITHUB_REF == 'main' ]] && [[ $GITHUB_EVENT_NAME == 'push' ]]; then
+              echo "building for production"
+              echo "TAG=${PROD_TAG}" >> "$GITHUB_ENV"
+              echo "WEBHOOK_URL=${{ secrets.DEPLOY_WEBHOOK_URL_PROD }}" >> "$GITHUB_ENV"
+          else
+              echo "building for development"
+              echo "TAG=${DEV_TAG}" >> "$GITHUB_ENV"
+              echo "WEBHOOK_URL=${{ secrets.DEPLOY_WEBHOOK_URL_DEV }}" >> "$GITHUB_ENV"
+          fi
       -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
-          tags:  ${{ github.ref == 'main' && github.event_name == 'push' && env.PROD_TAG || env.DEV_TAG }}
+          tags:  ${{ env.TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache
           # Note the mode=max here
           # More: https://github.com/moby/buildkit#--export-cache-options
@@ -90,5 +76,5 @@ jobs:
         name: Invoke portainer deployment hook
         uses: distributhor/workflow-webhook@v3.0.1
         env:
-          webhook_url: ${{ github.ref == 'main' && github.event_name == 'push' && secrets.DEPLOY_WEBHOOK_URL_PROD || secrets.DEPLOY_WEBHOOK_URL_DEV }}
+          webhook_url: ${{ env.WEBHOOK_URL }}
           verify_ssl: false
