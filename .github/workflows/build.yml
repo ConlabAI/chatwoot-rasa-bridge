@@ -46,7 +46,7 @@ jobs:
           echo "GITHUB_REF=$GITHUB_REF"
           echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
           echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
-          if [[ $GITHUB_REF == 'main' ]] && [[ $GITHUB_EVENT_NAME == 'push' ]]; then
+          if [[ $GITHUB_REF == '/ref/heads/main' ]] && [[ $GITHUB_EVENT_NAME == 'push' ]]; then
               echo "building for production"
               echo "TAG=${PROD_TAG}" >> "$GITHUB_ENV"
               echo "WEBHOOK_URL=${{ secrets.DEPLOY_WEBHOOK_URL_PROD }}" >> "$GITHUB_ENV"
